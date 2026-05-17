@@ -1,0 +1,56 @@
+name: Cypress Tests
+
+on:    # trigger point for push /pull request for my  github branch
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    environment: QA
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Cypress Installation
+        run: npx cypress verify
+
+      - name: Run Cypress Tests
+        run: npx cypress run --browser chrome --headless
+        env: 
+            BASE_URL: ${{secrets.BASE_URL}}
+
+      - name: Upload Cypress Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-reports
+          path: reports
