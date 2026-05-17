@@ -2,7 +2,7 @@ describe('GitHub Workflow Test', () => {
 
   it('Simple Login Test', () => {
 
-    cy.visit('https://practicetestautomation.com/practice-test-login/');
+    cy.visit('/');
 
     cy.get("#username",{timeout:5000})
       .type('student');
