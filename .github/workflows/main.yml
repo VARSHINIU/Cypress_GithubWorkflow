@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18]
+        node-version: [20]
 
     steps:
       - name: Checkout Repository
@@ -54,4 +54,3 @@ jobs:
         with:
           name: cypress-reports
           path: reports
-          
